@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../widgets/main_drawer.dart';
 import '../providers/orders_provider.dart';
-import './orders._item.dart';
+import './orders_item.dart';
 
 class OrdersScreen extends StatelessWidget {
   static const route = '/orders';
@@ -17,9 +17,12 @@ class OrdersScreen extends StatelessWidget {
         title: Text('Your Orders'),
       ),
       drawer: MainDrawer(),
-      body: ListView.builder(
-        itemCount: ordersProvider.orders.length,
-        itemBuilder: (ctx, idx) => OrdersItem(ordersProvider.orders[idx]),
+      body: RefreshIndicator(
+        onRefresh: ordersProvider.getOrders,
+        child: ListView.builder(
+          itemCount: ordersProvider.orders.length,
+          itemBuilder: (ctx, idx) => OrdersItem(ordersProvider.orders[idx]),
+        ),
       ),
     );
   }

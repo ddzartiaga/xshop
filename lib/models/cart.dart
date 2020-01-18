@@ -8,7 +8,7 @@ class Cart {
   double price;
 
   Cart({
-    @required this.cartId,
+    this.cartId,
     @required this.productId,
     @required this.title,
     @required this.price,
