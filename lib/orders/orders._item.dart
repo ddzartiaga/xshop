@@ -40,8 +40,9 @@ class _OrdersItemState extends State<OrdersItem> {
       ),
       if (_expanded)
         Container(
-          height: min(widget.order.items.length * 20.0 + 10, 180),
+          height: min(widget.order.items.length * 35.0 + 10, 180),
           margin: const EdgeInsets.symmetric(horizontal: 5),
+          alignment: Alignment.center,
           child: Card(
             color: Theme.of(context).accentColor.withAlpha(2),
             child: ListView(

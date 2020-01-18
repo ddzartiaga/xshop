@@ -13,12 +13,11 @@ class OrdersProvider with ChangeNotifier {
   Future<void> addOrders(double totalAmount, List<Cart> cart) async {
     const url = 'https://flutter-ddz.firebaseio.com/orders.json';
 
-    List<Map<String, dynamic>> t = [];
+    List<Map<String, dynamic>> cartProds = [];
 
     cart.forEach((f) {
-      t.add(
+      cartProds.add(
         {
-          'cartId': f.cartId,
           'productId': f.productId,
           'title': f.title,
           'price': f.productId,
@@ -28,8 +27,7 @@ class OrdersProvider with ChangeNotifier {
     });
 
     try {
-      var res = await http.post(url, body: json.encode(t));
-      print(res.statusCode);
+      var res = await http.post(url, body: json.encode(cartProds));
       if (res.statusCode == 200) {
         _orders.add(
           Order(
@@ -39,11 +37,17 @@ class OrdersProvider with ChangeNotifier {
             dateTime: DateTime.now(),
           ),
         );
-        print('Orders Posted');
+
+        print('Orders successfully saved!');
         notifyListeners();
+      } else {
+        throw Exception(
+          "Unable to fetch products. Server returned ${res.statusCode}",
+        );
       }
     } catch (ex) {
-      print('Error posting order');
+      print(ex.toString());
+      throw ex;
     }
   }
 }

@@ -9,6 +9,13 @@ import './cart_item.dart';
 class CartScreen extends StatelessWidget {
   static const route = '/cart';
 
+  void _showMessage(BuildContext context, String message) {
+    Scaffold.of(context).removeCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
@@ -54,6 +61,8 @@ class CartScreen extends StatelessWidget {
                   OrderNowButton(
                     ordersProvider: ordersProvider,
                     cartProvider: cartProvider,
+                    parentContext: context,
+                    callbackFn: _showMessage,
                   ),
                 ],
               ),
@@ -80,14 +89,17 @@ class CartScreen extends StatelessWidget {
 }
 
 class OrderNowButton extends StatefulWidget {
-  const OrderNowButton({
-    Key key,
-    @required this.ordersProvider,
-    @required this.cartProvider,
-  }) : super(key: key);
-
   final OrdersProvider ordersProvider;
   final CartProvider cartProvider;
+  final BuildContext parentContext;
+  final Function callbackFn;
+
+  const OrderNowButton({
+    @required this.ordersProvider,
+    @required this.cartProvider,
+    this.parentContext,
+    this.callbackFn,
+  });
 
   @override
   _OrderNowButtonState createState() => _OrderNowButtonState();
@@ -121,7 +133,8 @@ class _OrderNowButtonState extends State<OrderNowButton> {
 
                 Navigator.of(context).pushNamed(OrdersScreen.route);
               } catch (ex) {
-                print('ERROR: Add order(s) failed.');
+                widget.callbackFn(
+                    widget.parentContext, 'ERROR: Add order(s) failed.');
               } finally {
                 setState(() {
                   _loading = false;
